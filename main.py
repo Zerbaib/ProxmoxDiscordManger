@@ -14,7 +14,7 @@ PROXMOX_PASSWORD = "your-proxmox-password"
 async def on_ready():
     print("Bot is ready!")
 
-@bot.slash_command(name="createvm", description="Crée une VM Proxmox")
+@bot.slash_command(name="create", description="Crée une VM Proxmox")
 async def create_vm(ctx: discord.InteractionContext, vm_name: str, memory: int, storage: str, cpu_cores: int):
     vm_create_url = f"{PROXMOX_API_URL}/nodes/{PROXMOX_NODE}/qemu"
     vm_data = {"vmid": None, "name": vm_name, "memory": memory * 1024, "storage": storage, "cores": cpu_cores}
