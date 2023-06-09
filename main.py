@@ -1,14 +1,10 @@
 import discord
 from discord.ext import commands
 import requests
+import config
 
-TOKEN = "YOUR_DISCORD_BOT_TOKEN"
 bot = commands.Bot(command_prefix="/")
 
-PROXMOX_API_URL = "https://your-proxmox-api-url/api2/json"
-PROXMOX_NODE = "your-proxmox-node"
-PROXMOX_USER = "your-proxmox-username"
-PROXMOX_PASSWORD = "your-proxmox-password"
 
 @bot.event
 async def on_ready():
@@ -16,9 +12,9 @@ async def on_ready():
 
 @bot.slash_command(name="create", description="Crée une VM Proxmox")
 async def create_vm(ctx: discord.InteractionContext, vm_name: str, memory: int, storage: str, cpu_cores: int):
-    vm_create_url = f"{PROXMOX_API_URL}/nodes/{PROXMOX_NODE}/qemu"
+    vm_create_url = f"{config.PROXMOX_API_URL}/nodes/{config.PROXMOX_NODE}/qemu"
     vm_data = {"vmid": None, "name": vm_name, "memory": memory * 1024, "storage": storage, "cores": cpu_cores}
-    headers = {"Authorization": f"PVEAuthCookie={PROXMOX_USER}@{PROXMOX_NODE}={PROXMOX_PASSWORD}"}
+    headers = {"Authorization": f"PVEAuthCookie={config.PROXMOX_USER}@{config.PROXMOX_NODE}={config.PROXMOX_PASSWORD}"}
     response = requests.post(vm_create_url, json=vm_data, headers=headers)
 
     if response.status_code == 200:
@@ -26,4 +22,4 @@ async def create_vm(ctx: discord.InteractionContext, vm_name: str, memory: int, 
     else:
         await ctx.send("Erreur lors de la création de la VM.")
 
-bot.run(TOKEN)
+bot.run(config.TOKEN)
