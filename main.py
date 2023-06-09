@@ -1,4 +1,6 @@
 import discord
+from discord.ext import commands
+from discord.ext.commands.cooldowns import CooldownMapping, BucketType
 import requests
 
 TOKEN = "TOKEN"
@@ -12,5 +14,8 @@ PROXMOX_PASSWORD = "your-proxmox-password"
 @bot.event
 async def on_ready():
     print("Bot is ready!")
+
+
+
 
 bot.run(TOKEN)
