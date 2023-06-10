@@ -3,7 +3,7 @@ from discord.ext import commands
 import requests
 import config
 
-bot = commands.Bot(command_prefix="/")
+bot = commands.Bot(command_prefix="/", intents=config.intents)
 
 
 @bot.event
