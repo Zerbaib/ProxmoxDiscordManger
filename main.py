@@ -1,13 +1,11 @@
-import discord
-from discord.ext import commands
-from discord_interactions import *
+import disnake
+from disnake.ext import commands
 import requests
 import config
 
-intents = discord.Intents.default()
+intents = disnake.Intents.default()
 intents.typing = False
 intents.presences = False
-
 bot = commands.Bot(command_prefix="/", intents=intents)
 
 @bot.event
@@ -16,17 +14,11 @@ async def on_ready():
 
 @bot.slash_command(
     name="createvm",
-    description="Crée une VM Proxmox",
-    options=[
-        Option(str, "vm_name", "Le nom de la VM"),
-        Option(int, "memory", "La quantité de mémoire (en Mo)"),
-        Option(str, "storage", "L'espace de stockage"),
-        Option(int, "cpu_cores", "Le nombre de cœurs CPU")
-    ]
+    description="Crée une VM Proxmox"
 )
-async def create_vm(ctx, vm_name, memory, storage, cpu_cores):
+async def create_vm(ctx: disnake.ApplicationCommandInteraction, vm_name: str, memory: int, storage: str, cpu_cores: int):
     if ctx.author.id != config.ID:
-        await ctx.send("Désolé, vous n'êtes pas autorisé à exécuter cette commande.")
+        await ctx.response.send_message("Désolé, vous n'êtes pas autorisé à exécuter cette commande.", ephemeral=True)
         return
 
     vm_create_url = f"{config.PROXMOX_API_URL}/nodes/{config.PROXMOX_NODE}/qemu"
@@ -35,8 +27,8 @@ async def create_vm(ctx, vm_name, memory, storage, cpu_cores):
     response = requests.post(vm_create_url, json=vm_data, headers=headers)
 
     if response.status_code == 200:
-        await ctx.send(f"La VM {vm_name} a été créée avec succès !")
+        await ctx.response.send_message(f"La VM {vm_name} a été créée avec succès !", ephemeral=True)
     else:
-        await ctx.send("Erreur lors de la création de la VM.")
+        await ctx.response.send_message("Erreur lors de la création de la VM.", ephemeral=True)
 
 bot.run(config.TOKEN)
