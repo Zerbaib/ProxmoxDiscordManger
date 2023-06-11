@@ -5,4 +5,4 @@ PROXMOX_NODE = "your-proxmox-node"
 PROXMOX_USER = "your-proxmox-username"
 PROXMOX_PASSWORD = "your-proxmox-password"
 
-ID = 000000000
+ID = 000000000 # set your id
