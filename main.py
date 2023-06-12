@@ -3,6 +3,9 @@ from disnake.ext import commands
 import requests
 import config
 
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 intents = disnake.Intents.default()
 intents.typing = False
 intents.presences = False
@@ -24,7 +27,7 @@ async def create_vm(ctx: disnake.ApplicationCommandInteraction, vm_name: str, me
     vm_create_url = f"{config.PROXMOX_API_URL}/nodes/{config.PROXMOX_NODE}/qemu"
     vm_data = {"vmid": None, "name": vm_name, "memory": memory * 1024, "storage": storage, "cores": cpu_cores}
     headers = {"Authorization": f"PVEAuthCookie={config.PROXMOX_USER}@{config.PROXMOX_NODE}={config.PROXMOX_PASSWORD}"}
-    response = requests.post(vm_create_url, json=vm_data, headers=headers)
+    response = requests.post(vm_create_url, json=vm_data, headers=headers, verify=False)
 
     if response.status_code == 200:
         await ctx.response.send_message(f"La VM {vm_name} a été créée avec succès !", ephemeral=True)
