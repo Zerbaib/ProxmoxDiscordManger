@@ -24,14 +24,17 @@ async def create_vm(ctx: disnake.ApplicationCommandInteraction, vm_name: str, me
         await ctx.response.send_message("Désolé, vous n'êtes pas autorisé à exécuter cette commande.", ephemeral=True)
         return
 
+    await ctx.response.defer()  # Déferre la réponse pour avoir plus de temps de traitement
+
     vm_create_url = f"{config.PROXMOX_API_URL}/nodes/{config.PROXMOX_NODE}/qemu"
     vm_data = {"vmid": None, "name": vm_name, "memory": memory * 1024, "storage": storage, "cores": cpu_cores}
     headers = {"Authorization": f"PVEAuthCookie={config.PROXMOX_USER}@{config.PROXMOX_NODE}={config.PROXMOX_PASSWORD}"}
     response = requests.post(vm_create_url, json=vm_data, headers=headers, verify=False)
 
     if response.status_code == 200:
-        await ctx.response.send_message(f"La VM {vm_name} a été créée avec succès !", ephemeral=True)
+        await ctx.edit_original_message(content=f"La VM {vm_name} a été créée avec succès !")  # Édite le message original
     else:
-        await ctx.response.send_message("Erreur lors de la création de la VM.", ephemeral=True)
+        await ctx.edit_original_message(content="Erreur lors de la création de la VM.")  # Édite le message original
+
 
 bot.run(config.TOKEN)
