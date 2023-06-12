@@ -32,6 +32,8 @@ async def create_vm(ctx: disnake.ApplicationCommandInteraction, vm_name: str, me
         headers = {"Authorization": f"PVEAuthCookie={config.PROXMOX_USER}@{config.PROXMOX_NODE}={config.PROXMOX_PASSWORD}"}
         response = requests.post(vm_create_url, json=vm_data, headers=headers, verify=False)
 
+        print(response.text)  # Affiche la réponse de l'API dans la console
+
         if response.status_code == 200:
             await ctx.edit_original_message(content=f"La VM {vm_name} a été créée avec succès !")
         else:
@@ -39,6 +41,7 @@ async def create_vm(ctx: disnake.ApplicationCommandInteraction, vm_name: str, me
 
     except Exception as e:
         print(f"Erreur lors de la création de la VM : {e}")
+
 
 
 
